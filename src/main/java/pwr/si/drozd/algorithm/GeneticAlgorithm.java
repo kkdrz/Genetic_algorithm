@@ -41,9 +41,9 @@ public class GeneticAlgorithm {
     public void selection() {
         selectionPool = new ArrayList<>();
         double min = 1.0 / getWorstIndividual().calculateCost(data);
+        double max = 1.0 / bestIndividual.getCost();
         for (int i = 0; i < population.length; i++) {
             double current = (1.0 / population[i].calculateCost(data));
-            double max = 1.0 / bestIndividual.getCost();
             double normalizedCost = (current - min) / (max - min);
             int n = (int) (normalizedCost * 100.0);
             for (int j = 0; j < n; j++) {
@@ -68,10 +68,8 @@ public class GeneticAlgorithm {
     }
 
     public void mutation() {
-        int mutationsNumber = (int) (App.MUTATION_RATE * (double) App.POPULATION_SIZE);
-
-        for (int i = 0; i < mutationsNumber; i++) {
-            population[new Random().nextInt(population.length - 1)].mutate();
+        for (int i = 0; i < population.length; i++) {
+            population[i].mutate();
         }
     }
 

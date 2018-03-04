@@ -21,6 +21,7 @@ public class DataReader {
         int rows;
         int[][] distances;
         int[][] flows;
+        int best;
         try {
             sc = new Scanner(file);
             rows = sc.nextInt();
@@ -28,7 +29,8 @@ public class DataReader {
             distances = readMatrix(rows);
             flows = readMatrix(rows);
 
-            return new Data(rows, distances, flows);
+            best = sc.nextInt();
+            return new Data(rows, distances, flows, best);
         } catch (FileNotFoundException e) {
             throw e;
         } finally {

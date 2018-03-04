@@ -1,6 +1,7 @@
 package pwr.si.drozd.entity;
 
 
+import pwr.si.drozd.App;
 import pwr.si.drozd.tools.Utils;
 
 import java.util.ArrayList;
@@ -53,13 +54,15 @@ public class Individual {
 
     public void mutate() {
         Random random = new Random();
-        int pos1 = random.nextInt(units.length - 1);
-        int pos2 = random.nextInt(units.length - 1);
-        while (pos2 == pos1) pos2 = random.nextInt(units.length - 1);
-
-        int temp = units[pos1];
-        units[pos1] = units[pos2];
-        units[pos2] = temp;
+        for (int i = 0; i < units.length; i++) {
+            if (random.nextDouble() < App.MUTATION_RATE) {
+                //swap with random
+                int pos2 = random.nextInt(units.length - 1);
+                int temp = units[i];
+                units[i] = units[pos2];
+                units[pos2] = temp;
+            }
+        }
     }
 
     private void randomUnits() {
