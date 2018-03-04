@@ -1,5 +1,6 @@
 package pwr.si.drozd.tools;
 
+import org.junit.Before;
 import org.junit.Test;
 import pwr.si.drozd.entity.Data;
 import java.io.File;
@@ -9,9 +10,10 @@ import static org.junit.Assert.*;
 
 public class DataReaderTest {
 
-    static final int had12instances = 12;
+    private final int had12instances = 12;
+    private DataReader dataReader;
 
-    static final int[][] had12distances = {
+    private final int[][] had12distances = {
             {0, 1, 2, 2, 3, 4, 4, 5, 3, 5, 6, 7},
             {1, 0, 1, 1, 2, 3, 3, 4, 2, 4, 5, 6},
             {2, 1, 0, 2, 1, 2, 2, 3, 1, 3, 4, 5},
@@ -26,7 +28,7 @@ public class DataReaderTest {
             {7, 6, 5, 5, 4, 3, 3, 2, 6, 2, 1, 0}
     };
 
-    static final int[][] had12flows = {
+    private final int[][] had12flows = {
             {0, 3, 4, 6, 8, 5, 6, 6, 5, 1, 4, 6},
             {3, 0, 6, 3, 7, 9, 9, 2, 2, 7, 4, 7},
             {4, 6, 0, 2, 6, 4, 4, 4, 2, 6, 3, 6},
@@ -41,17 +43,17 @@ public class DataReaderTest {
             {6, 7, 6, 6, 7, 5, 7, 3, 2, 7, 9, 0}
     };
 
+    @Before
+    public void setUp() {
+        dataReader = new DataReader();
+    }
+
     @Test
     public void When_FileExists_Expect_CorrectData() throws Exception {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL url = classLoader.getResource("data/had12.txt");
-        assertNotNull("File meant to be tested doesn't exist", url);
-        File file = new File(url.getFile());
-
-        Data result = DataReader.readData(file);
+        Data result = dataReader.readData("had12.txt");
         int[][] resultDistances = result.getDistances();
         int[][] resultFlows = result.getFlows();
-        int resultInstances = result.getInstances();
+        int resultInstances = result.getUnitsNum();
 
         assertEquals("Number of instances does not match.", had12instances, resultInstances);
         for(int i=0; i < had12instances; i++) {
@@ -64,9 +66,7 @@ public class DataReaderTest {
 
     @Test(expected = FileNotFoundException.class)
     public void When_FileNotExists_Expect_Exception() throws Exception {
-        File file = new File("blabla");
-
-        Data result = DataReader.readData(file);
+        Data result = dataReader.readData("blabla");
     }
 
 }

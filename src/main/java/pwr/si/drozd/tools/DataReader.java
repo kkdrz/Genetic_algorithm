@@ -5,13 +5,19 @@ import pwr.si.drozd.entity.Data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.Scanner;
 
 public class DataReader {
 
     private static Scanner sc = new Scanner(System.in);
 
-    public static Data readData(File file) throws FileNotFoundException {
+    public Data readData(String dataFileName) throws FileNotFoundException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL url = classLoader.getResource("data/" + dataFileName);
+        assert url != null;
+        File file = new File(url.getFile());
+
         int rows;
         int[][] distances;
         int[][] flows;
@@ -30,7 +36,7 @@ public class DataReader {
         }
     }
 
-    private static int[][] readMatrix(int rows) {
+    private int[][] readMatrix(int rows) {
         int[][] matrix = new int[rows][rows];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < rows; j++) {
