@@ -3,8 +3,11 @@ package pwr.si.drozd.entity;
 
 import pwr.si.drozd.tools.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @lombok.Data
 public class Individual {
@@ -20,8 +23,32 @@ public class Individual {
         this.units = Arrays.copyOf(units, units.length);
     }
 
+    public Individual(Individual individual) {
+        units = Arrays.copyOf(individual.getUnits(), individual.getUnits().length);
+    }
+
     public Individual crossover(Individual partner) {
-        return null;
+        int position = ThreadLocalRandom.current().nextInt(1, units.length - 1);
+        Individual child = new Individual(this);
+        ArrayList<Integer> childUnits = new ArrayList<>();
+
+        for (int i = 0; i < child.getUnits().length; i++) {
+            if (i < position && !childUnits.contains(units[i])) {
+                childUnits.add(units[i]);
+            } else if (!childUnits.contains(partner.getUnits()[i])) {
+                childUnits.add(partner.getUnits()[i]);
+            }
+        }
+
+        for (int i = 0; childUnits.size() < child.getUnits().length && i < child.getUnits().length; i++) {
+            if (!childUnits.contains(i)) childUnits.add(i);
+        }
+
+        for (int i = 0; i < childUnits.size(); i++) {
+            child.getUnits()[i] = childUnits.get(i);
+        }
+        
+        return child;
     }
 
     private void randomUnits() {

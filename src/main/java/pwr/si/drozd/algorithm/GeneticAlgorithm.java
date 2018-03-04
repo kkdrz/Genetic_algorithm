@@ -7,25 +7,29 @@ import pwr.si.drozd.entity.Individual;
 public class GeneticAlgorithm {
     private static int POP_SIZE = 100;
 
-    private int unitsNum;
-    private int[][] distances;
-    private int[][] flows;
-
-    public static Data DATA;
+    private Data data;
 
     private Individual[] population;
+    private Individual bestIndividual;
 
     public GeneticAlgorithm(Data data) {
-        unitsNum = data.getUnitsNum();
-        distances = data.getDistances();
-        flows = data.getFlows();
+        this.data = data;
     }
 
     public void initPopulation() {
         population = new Individual[POP_SIZE];
         for (int i = 0; i < population.length; i++) {
-            population[i] = new Individual(unitsNum);
+            population[i] = new Individual(data.getUnitsNum());
         }
     }
 
+    private Individual getBestIndividualOfCurrentPopulation() {
+        Individual best = population[0];
+        for (Individual individual : population) {
+            if (best.calculateCost(data) > individual.calculateCost(data)) {
+                best = new Individual(individual);
+            }
+        }
+        return best;
+    }
 }
