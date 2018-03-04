@@ -5,7 +5,6 @@ import pwr.si.drozd.tools.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -13,6 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Individual {
 
     private int[] units;
+    private int cost;
 
     public Individual(int unitsNum) {
         units = new int[unitsNum];
@@ -53,9 +53,9 @@ public class Individual {
 
     public void mutate() {
         Random random = new Random();
-        int pos1 = random.nextInt();
-        int pos2 = random.nextInt();
-        while (pos2 == pos1) pos2 = random.nextInt();
+        int pos1 = random.nextInt(units.length - 1);
+        int pos2 = random.nextInt(units.length - 1);
+        while (pos2 == pos1) pos2 = random.nextInt(units.length - 1);
 
         int temp = units[pos1];
         units[pos1] = units[pos2];
@@ -70,8 +70,7 @@ public class Individual {
     }
 
     public int calculateCost(int unitsNum, int[][] flows, int[][] distances) {
-        int cost = 0;
-
+        cost = 0;
         for (int i = 0; i < unitsNum; i++) {
             for (int j = 0; j < unitsNum; j++) {
                 if (flows[i][j] > 0) {
