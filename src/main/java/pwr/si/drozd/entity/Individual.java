@@ -47,8 +47,19 @@ public class Individual {
         for (int i = 0; i < childUnits.size(); i++) {
             child.getUnits()[i] = childUnits.get(i);
         }
-        
+
         return child;
+    }
+
+    public void mutate() {
+        Random random = new Random();
+        int pos1 = random.nextInt();
+        int pos2 = random.nextInt();
+        while (pos2 == pos1) pos2 = random.nextInt();
+
+        int temp = units[pos1];
+        units[pos1] = units[pos2];
+        units[pos2] = temp;
     }
 
     private void randomUnits() {
