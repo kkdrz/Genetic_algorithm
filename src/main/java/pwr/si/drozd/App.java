@@ -1,7 +1,8 @@
 package pwr.si.drozd;
 
+import pwr.si.drozd.algorithm.RandomAlgorithm;
 import pwr.si.drozd.entity.Data;
-import pwr.si.drozd.entity.GeneticAlgorithm;
+import pwr.si.drozd.algorithm.GeneticAlgorithm;
 import pwr.si.drozd.tools.DataReader;
 import java.io.FileNotFoundException;
 
@@ -15,9 +16,8 @@ public class App {
 
         GA.initPopulation();
 
-        for(int i = 0; i < GA.getPopulation().length-1;i++) {
-            System.out.println(GA.calculateCost(GA.getPopulation()[i]));
-        }
+
+        System.out.println("Random: " + new RandomAlgorithm(data).findBestIndividual(60000).calculateCost(data.getUnitsNum(), data.getFlows(), data.getDistances()));
 
     }
 

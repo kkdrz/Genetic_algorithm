@@ -1,4 +1,7 @@
-package pwr.si.drozd.entity;
+package pwr.si.drozd.algorithm;
+
+import pwr.si.drozd.entity.Data;
+import pwr.si.drozd.entity.Individual;
 
 @lombok.Data
 public class GeneticAlgorithm {
@@ -23,19 +26,6 @@ public class GeneticAlgorithm {
         for (int i = 0; i < population.length; i++) {
             population[i] = new Individual(unitsNum);
         }
-    }
-
-    public int calculateCost(Individual individual) {
-        int cost = 0;
-
-        for (int i = 0; i < unitsNum; i++) {
-            for (int j = 0; j < unitsNum; j++) {
-                if (flows[i][j] > 0) {
-                    cost += flows[i][j] * distances[individual.getIndex(i)][individual.getIndex(j)];
-                }
-            }
-        }
-        return cost;
     }
 
 }
