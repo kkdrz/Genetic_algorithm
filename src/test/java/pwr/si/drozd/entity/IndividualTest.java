@@ -1,17 +1,13 @@
-package pwr.si.drozd.tools;
+package pwr.si.drozd.entity;
 
-import org.junit.Before;
-import org.junit.Test;
-import pwr.si.drozd.entity.Data;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URL;
-import static org.junit.Assert.*;
+import junit.framework.TestCase;
 
-public class DataReaderTest {
+import java.util.HashSet;
 
-    private final int had12instances = 12;
-    private DataReader dataReader;
+import java.util.Set;
+
+
+public class IndividualTest extends TestCase {
 
     private final int[][] had12distances = {
             {0, 1, 2, 2, 3, 4, 4, 5, 3, 5, 6, 7},
@@ -43,28 +39,42 @@ public class DataReaderTest {
             {6, 7, 6, 6, 7, 5, 7, 3, 2, 7, 9, 0}
     };
 
-    @Before
-    public void setUp() {
-        dataReader = new DataReader();
-    }
+    Data had12Data = new Data(12, had12distances, had12flows, 1652);
 
-    @Test
-    public void When_FileExists_Expect_CorrectData() throws Exception {
-        Data result = dataReader.readData("had12.txt");
-        int[][] resultDistances = result.getDistances();
-        int[][] resultFlows = result.getFlows();
-        int resultInstances = result.getUnitsNum();
+    public void testCrossover() throws Exception {
+        Individual i1 = new Individual(10);
+        Individual i2 = new Individual(10);
 
-        assertEquals("Number of instances does not match.", had12instances, resultInstances);
-        for(int i=0; i < had12instances; i++) {
-            assertArrayEquals("Distances matrix does not match.", resultDistances[i], had12distances[i]);
-            assertArrayEquals("Flows matrix does not match.", resultFlows[i], had12flows[i]);
+        Individual result = i1.crossover(i2);
+
+        Set<Integer> set = new HashSet<>();
+
+        for(int i:result.getUnits()) {
+            set.add(i);
         }
+        assertEquals(10, set.size());
     }
 
-    @Test(expected = FileNotFoundException.class)
-    public void When_FileNotExists_Expect_Exception() throws FileNotFoundException {
-        Data result = dataReader.readData("blabla");
+    public void testCalculateCost() throws Exception {
+        int[] units = {2,9,10,1,11,4,5,6,7,0,3,8};
+        Individual individual = new Individual(units);
+
+        int cost = individual.calculateCost(had12Data);
+
+        assertEquals(had12Data.getBestCost(), cost);
+    }
+
+    public void testGetLocationOf() throws Exception {
+        int[] units = {2,9,10,1,11,4,5,6,7,0,3,8};
+        Individual individual = new Individual(units);
+
+        int loc2 = individual.getLocationOf(2);
+        int loc10 = individual.getLocationOf(10);
+        int loc8 = individual.getLocationOf(8);
+
+        assertEquals(0, loc2);
+        assertEquals(2, loc10);
+        assertEquals(11, loc8);
     }
 
 }

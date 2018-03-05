@@ -15,7 +15,7 @@ public class DataReader {
     public Data readData(String dataFileName) throws FileNotFoundException {
         ClassLoader classLoader = getClass().getClassLoader();
         URL url = classLoader.getResource("data/" + dataFileName);
-        assert url != null;
+        if(url == null) throw new FileNotFoundException();
         File file = new File(url.getFile());
 
         int rows;

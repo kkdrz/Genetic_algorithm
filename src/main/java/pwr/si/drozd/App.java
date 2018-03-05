@@ -21,10 +21,9 @@ import java.util.Map;
 
 public class App extends Application {
 
-    public static int POPULATION_SIZE = 100;
-    public static int GENERATIONS = 20;
-    public static double MUTATION_RATE = 0.1;
-    public static double CROSSING_RATE = 0.01;
+    public static int POPULATION_SIZE = 800;
+    public static int GENERATIONS = 200;
+    public static double MUTATION_RATE = 0.25;
     public static long RANDOM_DURATION = 1000;
 
     public static int REPEATS = 10;
@@ -42,17 +41,19 @@ public class App extends Application {
 
 
     public static void main(String[] args) throws FileNotFoundException {
+
         DataReader dataReader = new DataReader();
-        Data data = dataReader.readData("had14.txt");
+        Data data = dataReader.readData("had12.txt");
+        GeneticAlgorithm GA = new GeneticAlgorithm(data);
         initTriesLists();
 
         for (int i = 0; i < REPEATS; i++) {
-            GeneticAlgorithm GA = new GeneticAlgorithm(data);
+            GA = new GeneticAlgorithm(data);
 
             GA.initPopulation();
             GA.evaluate();
             int currentGeneration = -1;
-            while (currentGeneration++ < GENERATIONS && GA.getBestIndividual().getCost() > data.getBestCost()) {
+            while (currentGeneration++ < GENERATIONS ) { //&& GA.getBestIndividual().getCost() > data.getBestCost()
                 GA.selection();
                 GA.reproduction();
                 GA.mutation();
@@ -60,7 +61,6 @@ public class App extends Application {
                 bestTries.get(i).put(currentGeneration, GA.getBestIndividual().calculateCost(data));
                 worstTries.get(i).put(currentGeneration, GA.getWorstIndividual().calculateCost(data));
                 avgTries.get(i).put(currentGeneration, GA.getAverageCost());
-                System.out.println(GA.getBestIndividual().calculateCost(data));
             }
 
             RandomAlgorithm RA = new RandomAlgorithm(data);
@@ -69,7 +69,7 @@ public class App extends Application {
         }
 
         populateChartData(data);
-
+        System.out.println(GA.getBestIndividual().getCost());
         launch(args);
     }
 
@@ -110,7 +110,9 @@ public class App extends Application {
         for (int j = 0; j < GENERATIONS; j++) {
             int avgCost = 0;
             for (int i = 0; i < REPEATS; i++) {
-                avgCost += tries.get(i).get(j);
+                if(tries.get(i) != null && tries.get(i).get(j) != null) {
+                    avgCost += tries.get(i).get(j);
+                }
             }
             series.getData().add(new XYChart.Data(j, avgCost / REPEATS));
         }
@@ -134,8 +136,8 @@ public class App extends Application {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
         yAxis.setAutoRanging(false);
-        yAxis.setLowerBound(((XYChart.Data<Number, Number>) bestPossibleSeries.getData().get(0)).getYValue().doubleValue() - 300.0);
-        yAxis.setUpperBound(((XYChart.Data<Number, Number>) worstSeries.getData().get(0)).getYValue().doubleValue() + 300.0);
+        yAxis.setLowerBound(((XYChart.Data<Number, Number>) bestPossibleSeries.getData().get(0)).getYValue().doubleValue() - 100.0);
+        yAxis.setUpperBound(((XYChart.Data<Number, Number>) worstSeries.getData().get(0)).getYValue().doubleValue() + 100.0);
 
         xAxis.setLabel("Generation");
         final LineChart<Number, Number> lineChart =
@@ -145,7 +147,6 @@ public class App extends Application {
 
         Scene scene = new Scene(lineChart, 800, 600);
         lineChart.getData().addAll(bestSeries, worstSeries, avgSeries, randomSeries, bestPossibleSeries);
-
         stage.setScene(scene);
         stage.show();
     }
